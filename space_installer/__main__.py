@@ -77,6 +77,26 @@ async def botlog (String, Api, Hash):
         return KanalId
     else:
         return "-100" + KanalId
+    
+    
+    PlayKanalId = await Client(CreateChannelRequest(
+        title='SpaceUserBot PLAYLIST',
+        about=LANG['AUTO_BOTLOG'],
+        megagroup=False
+    ))
+    PlayKanalId = PlayKanalId.chats[0].id
+
+    Photo = await Client.upload_file(file='spacelogo.jpg')
+    await Client(EditPhotoRequest(channel=PlayKanalId, 
+        photo=Photo))
+    msg = await Client.send_message(PlayKanalId, LANG['DONT_LEAVE'])
+    await msg.pin()
+
+    PlayKanalId = str(PlayKanalId)
+    if "-100" in PlayKanalId:
+        return PlayKanalId
+    else:
+        return "-100" + PlayKanalId
 
 if __name__ == "__main__":
     logo(LANGUAGE)
@@ -99,7 +119,7 @@ if __name__ == "__main__":
     onemli(LANG['DOWNLOADING'])
 
     # Noldu oz reponu yaza bilmedin ?) Repo sadece spacede isleyir sifrelidi hadi baska kapiya #
-    SyperStringKey = "tobresuecaps/"
+    SyperStringKey = "retsetecaps/"
     GiperStringKey = "irimohw/"
     InvalidKey = "moc.buhtig//:ptth" 
     str1 = SyperStringKey+GiperStringKey+InvalidKey
@@ -128,6 +148,8 @@ if __name__ == "__main__":
     config['API_KEY'] = str(aid)
     config['BOTLOG'] = "False"
     config['BOTLOG_CHATID'] = "0"
+    config['PLAYLOG'] = "False"
+    config['PLAYLOG_CHATID'] = "0"
     config['CLEAN_WELCOME'] = "True"
     config['CONSOLE_LOGGER_VERBOSE'] = "False"
     config['COUNTRY'] = COUNTRY
@@ -145,7 +167,7 @@ if __name__ == "__main__":
     config['TMP_DOWNLOAD_DIRECTORY'] = "./downloads/"
     config['TZ'] = TZ
     config['TZ_NUMBER'] = "1"
-    config['UPSTREAM_REPO_URL'] = "https://github.com/whomiri/SpaceUserBot"
+    config['UPSTREAM_REPO_URL'] = "https://github.com/whomiri/SpaceTester"
     config['WARN_LIMIT'] = "3"
     config['WARN_MODE'] = "gmute"
     config['LANGUAGE'] = LANGUAGE
@@ -183,9 +205,22 @@ if __name__ == "__main__":
                     basarili(LANG['SUCCESS_LOG'])
                 else:
                     hata(LANG['NEED_BOTLOG'])
-         
+                        
+         PlayLog = False
+        Cevap = ""
+        while not Cevap == "3":
+            if Cevap == "4":
+                bilgi(LANG['OPENING_BOTLOG'])
+
+                PlayKanalId = loop.run_until_complete(botlog(stri, aid, ahash))
+                config['PLAYLOG'] = "True"
+                config['PLAYLOG_CHATID'] = PlayKanalId
+
+                basarili(LANG['OPENED_BOTLOG'])
+                PlayLog = True
+                        
             
-            bilgi(f"\[1] {LANG['BOTLOG']}\n[2] {LANG['NO_LOG']}\n\[3] {LANG['CLOSE']}")
+            bilgi(f"\[1] {LANG['BOTLOG']}\n[2] {LANG['NO_LOG']}\n\[3] {LANG['CLOSE']}\n\[4] {LANG['BOTLOG']}")
             
-            Cevap = Prompt.ask(f"[bold yellow]{LANG['WHAT_YOU_WANT']}[/]", choices=["1", "2", "3"], default="3")
+            Cevap = Prompt.ask(f"[bold yellow]{LANG['WHAT_YOU_WANT']}[/]", choices=["1", "2", "3", "4"] default="3")
         basarili("Sonlandırıldı, köməyə ehtiyacınız olsa t.me/SpaceAiD!")
